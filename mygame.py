@@ -7,18 +7,18 @@ pygame.init()  # initializes pygame
 width = 960
 height = 600
 dispSurf = pygame.display.set_mode((width,height))
-pygame.display.set_caption("My game")
+pygame.display.set_caption("Hazel gouse and the egg thief")
 
 # the Surface objects
 level = pygame.image.load("level.jpg").convert()
-mario = pygame.image.load("mario.png").convert()
-fireball = pygame.image.load("fireball.png").convert()
+pyy = pygame.image.load("pyy.png").convert()
+kanahaukka = pygame.image.load("kanahaukka.png").convert()
 # pygame.image.load(file) function loads a picture "file" into a given variable
 # convert() method converts the picture into the right pixel-format
 # picture files needs to be in the same folder as this python file
 # the folder path can be relative or absolute:
-# relative path: mario = pygame.image.load("folder\\mario.png").convert()
-# absolute path: fireball = pygame.image.load("C:\\folder\\fireball.png").convert()
+# relative path: pyy = pygame.image.load("folder\\pyy.png").convert()
+# absolute path: kanahaukka = pygame.image.load("C:\\folder\\kanahaukka.png").convert()
 
 # empty black Surface(width, height)
 rectangle = pygame.Surface((300,50))
@@ -37,8 +37,8 @@ rectangle.fill(pink)
 # Surface objects can be added to the display surface with blit() method
 # blit(Surface,(x,y)) adds "Surface" into coordinates (x,y)=(left, top)
 dispSurf.blit(level, (0,0))
-dispSurf.blit(fireball, (0,0))
-dispSurf.blit(mario, (400,500))
+dispSurf.blit(kanahaukka, (0,0))
+dispSurf.blit(pyy, (400,500))
 dispSurf.blit(rectangle, (0,200))
 
 # the display surface needs to be updated for the blitted Surfaces to become visible
@@ -48,19 +48,19 @@ pygame.display.flip()
 # Surface.get_rect() method returns the Rect object of "Surface"
 # Rect objects are needed to move Surfaces and for collision detection
 # Rect(left, top, width, height) contains left/top-coordinates and width/height
-fireballArea = fireball.get_rect()
-marioArea = mario.get_rect()
+kanahaukkaArea = kanahaukka.get_rect()
+pyyArea = pyy.get_rect()
 rectangleArea = rectangle.get_rect()
 
 # get_rect() method by default sets the left-top corner to (0,0)
-# mario and rectangle were not blitted into (0,0)
+# pyy and rectangle were not blitted into (0,0)
 # the left and top coordinates have to be changed with dot notation
-marioArea.left = 400
-marioArea.top = 500
+pyyArea.left = 400
+pyyArea.top = 500
 rectangleArea.left = 0
 rectangleArea.top = 200
 
-# speed contains the [x,y]-speed of the fireball in pixels
+# speed contains the [x,y]-speed of the kanahaukka in pixels
 speed = [1,1]
 
 
@@ -82,46 +82,46 @@ while True:
                 sys.exit()    # the python program exits
 
 
-    # fireball will be moved by speed=[1,1] in every iteration
+    # kanahaukka will be moved by speed=[1,1] in every iteration
     # move_ip([x,y]) changes the Rect-objects left-top coordinates by x and y
-    fireballArea.move_ip(speed)
+    kanahaukkaArea.move_ip(speed)
 
 
-    # fireball bounces from the edges of the display surface
-    if fireballArea.left < 0 or fireballArea.right > width: # fireball is vertically outside the game
+    # kanahaukka bounces from the edges of the display surface
+    if kanahaukkaArea.left < 0 or kanahaukkaArea.right > width: # kanahaukka is vertically outside the game
         speed[0] = -speed[0] # the x-direction of the speed will be converted
-    if fireballArea.top < 0 or fireballArea.bottom > height: # fireball is horizontally outside the game
+    if kanahaukkaArea.top < 0 or kanahaukkaArea.bottom > height: # kanahaukka is horizontally outside the game
         speed[1] = -speed[1] # the y-direction of the speed will be converted
 
 
-    # fireball bounces from the rectangle
-    if rectangleArea.colliderect(fireballArea):
+    # kanahaukka bounces from the rectangle
+    if rectangleArea.colliderect(kanahaukkaArea):
     # a.colliderect(b) returns True if Rect-objects a and b overlap
-        if rectangleArea.colliderect(fireballArea.move(-speed[0],0)):
-        # if the fireball came from vertical direction
+        if rectangleArea.colliderect(kanahaukkaArea.move(-speed[0],0)):
+        # if the kanahaukka came from vertical direction
             speed[1] = -speed[1] # the y-direction of the speed will be converted
         else:
-        # otherwise the fireball came from horizontal direction
+        # otherwise the kanahaukka came from horizontal direction
             speed[0] = -speed[0] # the x-direction of the speed will be converted
 
 
-    # mario can be moved with left/right/up/down-keys
+    # pyy can be moved with left/right/up/down-keys
     # get.pressed() function gives a boolean list of all the keys if they are being pressed
     pressings = pygame.key.get_pressed()
     if pressings[K_LEFT]:          # if left-key is true in the list
-        marioArea.move_ip((-1,0))  # mario will be moved one pixel left
+        pyyArea.move_ip((-1,0))  # pyy will be moved one pixel left
     if pressings[K_RIGHT]:
-        marioArea.move_ip((1,0))
+        pyyArea.move_ip((1,0))
     if pressings[K_DOWN]:
-        marioArea.move_ip((0,1))
+        pyyArea.move_ip((0,1))
     if pressings[K_UP]:
-        marioArea.move_ip((0,-1))
+        pyyArea.move_ip((0,-1))
 
 
     # blit all the Surfaces in their new places
     dispSurf.blit(level, (0,0)) # without this, moving characters would have a "trace"
-    dispSurf.blit(fireball, fireballArea)
-    dispSurf.blit(mario, marioArea)
+    dispSurf.blit(kanahaukka, kanahaukkaArea)
+    dispSurf.blit(pyy, pyyArea)
     dispSurf.blit(rectangle, rectangleArea)
 
 
