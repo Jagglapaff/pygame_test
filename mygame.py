@@ -13,12 +13,14 @@ pygame.display.set_caption("Hazel gouse and the egg thief")
 level = pygame.image.load("level.jpg").convert()
 pyy = pygame.image.load("pyy.png").convert()
 kanahaukka = pygame.image.load("kanahaukka.png").convert()
+berry = pygame.image.load("berry.png").convert()
 # pygame.image.load(file) function loads a picture "file" into a given variable
 # convert() method converts the picture into the right pixel-format
 # picture files needs to be in the same folder as this python file
 # the folder path can be relative or absolute:
 # relative path: pyy = pygame.image.load("folder\\pyy.png").convert()
 # absolute path: kanahaukka = pygame.image.load("C:\\folder\\kanahaukka.png").convert()
+
 
 # empty black Surface(width, height)
 rectangle = pygame.Surface((300,50))
@@ -40,6 +42,7 @@ dispSurf.blit(level, (0,0))
 dispSurf.blit(kanahaukka, (0,0))
 dispSurf.blit(pyy, (400,500))
 dispSurf.blit(rectangle, (0,200))
+dispSurf.blit(berry, (300,300))
 
 # the display surface needs to be updated for the blitted Surfaces to become visible
 # pygame.display.update() would do the same
@@ -51,6 +54,7 @@ pygame.display.flip()
 kanahaukkaArea = kanahaukka.get_rect()
 pyyArea = pyy.get_rect()
 rectangleArea = rectangle.get_rect()
+berryArea = berry.get_rect()
 
 # get_rect() method by default sets the left-top corner to (0,0)
 # pyy and rectangle were not blitted into (0,0)
@@ -60,11 +64,17 @@ pyyArea.top = 500
 rectangleArea.left = 0
 rectangleArea.top = 200
 
-# speed contains the [x,y]-speed of the kanahaukka in pixels
-speed = [1,1]
+# Variables
+# hawkspeed contains the [x,y]-hawkspeed of the kanahaukka in pixels
+hawkspeed = [1,1]
+lives = 3
 
+# Font objects
+# Create a font object
+font = pygame.font.Font(None, 36)
 
-
+# Create a Surface with the text you want to display
+text = font.render(f'Lives: {lives}', 1, (255, 255, 255))
 
 
 # the game loop which runs until sys.exit()
@@ -82,27 +92,37 @@ while True:
                 sys.exit()    # the python program exits
 
 
-    # kanahaukka will be moved by speed=[1,1] in every iteration
+    # kanahaukka will be moved by hawkspeed=[1,1] in every iteration
     # move_ip([x,y]) changes the Rect-objects left-top coordinates by x and y
-    kanahaukkaArea.move_ip(speed)
+    kanahaukkaArea.move_ip(hawkspeed)
 
+    # Check for collision
+    if pyyArea.colliderect(kanahaukkaArea):
+        # If a collision is detected, reduce the number of lives by 1
+        lives -= 1
+        text = font.render(f'Lives: {lives}', 1, (255, 255, 255))
+    
+    if pyyArea.colliderect(berryArea):
+    # If a collision is detected, reduce the number of lives by 1
+        lives += 1
+        text = font.render(f'Lives: {lives}', 1, (255, 255, 255))
 
     # kanahaukka bounces from the edges of the display surface
     if kanahaukkaArea.left < 0 or kanahaukkaArea.right > width: # kanahaukka is vertically outside the game
-        speed[0] = -speed[0] # the x-direction of the speed will be converted
+        hawkspeed[0] = -hawkspeed[0] # the x-direction of the hawkspeed will be converted
     if kanahaukkaArea.top < 0 or kanahaukkaArea.bottom > height: # kanahaukka is horizontally outside the game
-        speed[1] = -speed[1] # the y-direction of the speed will be converted
+        hawkspeed[1] = -hawkspeed[1] # the y-direction of the hawkspeed will be converted
 
 
     # kanahaukka bounces from the rectangle
     if rectangleArea.colliderect(kanahaukkaArea):
     # a.colliderect(b) returns True if Rect-objects a and b overlap
-        if rectangleArea.colliderect(kanahaukkaArea.move(-speed[0],0)):
+        if rectangleArea.colliderect(kanahaukkaArea.move(-hawkspeed[0],0)):
         # if the kanahaukka came from vertical direction
-            speed[1] = -speed[1] # the y-direction of the speed will be converted
+            hawkspeed[1] = -hawkspeed[1] # the y-direction of the hawkspeed will be converted
         else:
         # otherwise the kanahaukka came from horizontal direction
-            speed[0] = -speed[0] # the x-direction of the speed will be converted
+            hawkspeed[0] = -hawkspeed[0] # the x-direction of the hawkspeed will be converted
 
 
     # pyy can be moved with left/right/up/down-keys
@@ -123,6 +143,10 @@ while True:
     dispSurf.blit(kanahaukka, kanahaukkaArea)
     dispSurf.blit(pyy, pyyArea)
     dispSurf.blit(rectangle, rectangleArea)
+    dispSurf.blit(berry, berryArea)
+
+        # Draw the text on the screen
+    dispSurf.blit(text, (400, 300))
 
 
     # updating the display surface is always needed at the end of each iteration of game loop
