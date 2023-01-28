@@ -1,12 +1,13 @@
+import random
+import time
 import pygame
 import sys     # sys-module will be needed to exit the game
 from pygame.locals import * # imports the constants of pygame
 pygame.init()  # initializes pygame
 
 # the display surface
-width = 960
-height = 600
-dispSurf = pygame.display.set_mode((width,height))
+size = (960, 600)
+dispSurf = pygame.display.set_mode(size)
 pygame.display.set_caption("Hazel gouse and the egg thief")
 
 # the Surface objects
@@ -42,7 +43,8 @@ dispSurf.blit(level, (0,0))
 dispSurf.blit(kanahaukka, (0,0))
 dispSurf.blit(pyy, (400,500))
 dispSurf.blit(rectangle, (0,200))
-dispSurf.blit(berry, (300,300))
+#dispSurf.blit(berry, (300,300))
+
 
 # the display surface needs to be updated for the blitted Surfaces to become visible
 # pygame.display.update() would do the same
@@ -63,11 +65,19 @@ pyyArea.left = 400
 pyyArea.top = 500
 rectangleArea.left = 0
 rectangleArea.top = 200
-
+berryArea.left = random.randint(0, size[0])
+berryArea.top = random.randint(0, size[1])
 # Variables
 # hawkspeed contains the [x,y]-hawkspeed of the kanahaukka in pixels
 hawkspeed = [1,1]
 lives = 3
+
+# Initialize the berry visibility and the time when it was last changed
+berry_visible = False
+berry_last_change = pygame.time.get_ticks()
+
+# Set the duration for which the berry should be visible or hidden
+visibility_duration = 3000  # 3000 milliseconds = 3 seconds
 
 # Font objects
 # Create a font object
@@ -91,6 +101,14 @@ while True:
                 pygame.quit() # the display window closes
                 sys.exit()    # the python program exits
 
+    # Get the current time
+    current_time = pygame.time.get_ticks()
+
+    # Check if the visibility duration has passed
+    if current_time - berry_last_change > visibility_duration:
+        # Change the berry visibility and update the last change time
+        berry_visible = not berry_visible
+        berry_last_change = current_time
 
     # kanahaukka will be moved by hawkspeed=[1,1] in every iteration
     # move_ip([x,y]) changes the Rect-objects left-top coordinates by x and y
@@ -108,9 +126,9 @@ while True:
         text = font.render(f'Lives: {lives}', 1, (255, 255, 255))
 
     # kanahaukka bounces from the edges of the display surface
-    if kanahaukkaArea.left < 0 or kanahaukkaArea.right > width: # kanahaukka is vertically outside the game
+    if kanahaukkaArea.left < 0 or kanahaukkaArea.right > size[0]: # kanahaukka is vertically outside the game
         hawkspeed[0] = -hawkspeed[0] # the x-direction of the hawkspeed will be converted
-    if kanahaukkaArea.top < 0 or kanahaukkaArea.bottom > height: # kanahaukka is horizontally outside the game
+    if kanahaukkaArea.top < 0 or kanahaukkaArea.bottom > size[1]: # kanahaukka is horizontally outside the game
         hawkspeed[1] = -hawkspeed[1] # the y-direction of the hawkspeed will be converted
 
 
@@ -138,12 +156,16 @@ while True:
         pyyArea.move_ip((0,-1))
 
 
+
     # blit all the Surfaces in their new places
     dispSurf.blit(level, (0,0)) # without this, moving characters would have a "trace"
     dispSurf.blit(kanahaukka, kanahaukkaArea)
     dispSurf.blit(pyy, pyyArea)
     dispSurf.blit(rectangle, rectangleArea)
-    dispSurf.blit(berry, berryArea)
+    
+    # If the berry is visible, draw it on the screen
+    if berry_visible:
+        dispSurf.blit(berry, berryArea)
 
         # Draw the text on the screen
     dispSurf.blit(text, (400, 300))
