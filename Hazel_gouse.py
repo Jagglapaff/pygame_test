@@ -70,7 +70,8 @@ berryArea.top = random.randint(0, size[1])
 # Variables
 # hawkspeed contains the [x,y]-hawkspeed of the kanahaukka in pixels
 hawkspeed = [1,1]
-lives = 3
+lives = 100
+gameover = False
 
 # Initialize the berry visibility and the time when it was last changed
 berry_visible = False
@@ -82,10 +83,10 @@ visibility_duration = 3000  # 3000 milliseconds = 3 seconds
 # Font objects
 # Create a font object
 font = pygame.font.Font(None, 36)
-
+game_over_font = pygame.font.Font(None, 100)
 # Create a Surface with the text you want to display
 text = font.render(f'Lives: {lives}', 1, (255, 255, 255))
-
+game_over = game_over_font.render(f'Game over', 1, (255, 255, 255))
 
 # the game loop which runs until sys.exit()
 while True:
@@ -124,6 +125,13 @@ while True:
     # If a collision is detected, reduce the number of lives by 1
         lives += 1
         text = font.render(f'Lives: {lives}', 1, (255, 255, 255))
+    
+             
+    if lives <= 0:
+        gameover == True
+
+
+
 
     # kanahaukka bounces from the edges of the display surface
     if kanahaukkaArea.left < 0 or kanahaukkaArea.right > size[0]: # kanahaukka is vertically outside the game
@@ -169,6 +177,9 @@ while True:
 
         # Draw the text on the screen
     dispSurf.blit(text, (400, 300))
+
+    if gameover == True:
+        dispSurf.blit(game_over, (400, 300))
 
 
     # updating the display surface is always needed at the end of each iteration of game loop
