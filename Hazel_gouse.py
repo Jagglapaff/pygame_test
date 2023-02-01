@@ -87,6 +87,7 @@ game_over_font = pygame.font.Font(None, 100)
 # Create a Surface with the text you want to display
 text = font.render(f'Lives: {lives}', 1, (255, 255, 255))
 game_over = game_over_font.render(f'Game over', 1, (255, 255, 255))
+new_game =  font.render(f'Restart new game?', 1, (255, 255, 255))
 
 # the game loop which runs until sys.exit()
 while True:
@@ -128,7 +129,7 @@ while True:
     
              
     if lives <= 0:
-        gameover == True
+        gameover = True
 
 
 
@@ -162,6 +163,7 @@ while True:
         pyyArea.move_ip((0,1))
     if pressings[K_UP]:
         pyyArea.move_ip((0,-1))
+    
 
 
 
@@ -176,10 +178,18 @@ while True:
         dispSurf.blit(berry, berryArea)
 
         # Draw the text on the screen
-    dispSurf.blit(text, (400, 300))
+    dispSurf.blit(text, (800, 50))
 
     if gameover == True:
-        dispSurf.blit(game_over, (400, 300))
+        dispSurf.blit(game_over, (300, 200))
+        dispSurf.blit(new_game, (400, 300))
+
+        pressings = pygame.key.get_pressed()
+        if pressings[K_y]:
+            lives = 100
+            gameover = False
+            
+
 
 
     # updating the display surface is always needed at the end of each iteration of game loop
